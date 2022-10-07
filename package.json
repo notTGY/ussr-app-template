@@ -1,0 +1,19 @@
+{
+  "name": "ussr-app-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "repository": "https://github.com/notTGY/ussr-app-template.git",
+  "author": "notTGY <microcraft47@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.15.2"
+  },
+  "scripts": {
+    "build-app": "esbuild src/App.jsx --outfile=build/App.js --bundle=true --minify --format=esm",
+    "start": "yarn build-app && node server.js",
+    "build": "esbuild src/index.jsx --outfile=build/index.js --bundle=true --minify",
+    "size": "esbuild happyFramework/index.js --bundle --minify --outfile=build/framework.js"
+  }
+}

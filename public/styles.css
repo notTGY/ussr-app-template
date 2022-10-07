@@ -1,0 +1,21 @@
+body { margin: 0; background: linear-gradient(37deg, #8888ff, #ddddff); font-family: Arial; text-align: center; padding-top: 3rem; color: #fff;}
+
+button {background: #4444ff80; border-radius: 100%; border: none; padding: 1rem; transition: 0.25s; margin: 0.1rem; color: white;}
+button:active { padding: 1.1rem; margin: 0;}
+
+p { margin-top: 3rem; background: #7777ff; border-radius: 10px; padding: 1rem; width: fit-content; color: #ddddff}
+a { color: white }
+
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  color: #7040ff;
+}
+
+div {
+  margin: 0.5rem;
+}
