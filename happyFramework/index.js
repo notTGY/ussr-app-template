@@ -1,20 +1,26 @@
 import { dom, frag } from './jsx.js'
 
+const deleteRec = (oldTree) => {
+  (oldTree.children??[]).map(deleteRec)
+  if (!oldTree.repaint) {
+    oldTree.$el.remove()
+    oldTree = null
+  }
+}
+
+const hydrate = ($el) => ({
+    $el,
+    elem: $el.nodeName.toLowerCase(),
+    children: [...$el.children].map(hydrate)
+})
+
 const init = ($el, fn) => {
-  let prevTree = {$el, elem: $el.nodeName.toLowerCase()}, tmp
+  let tmp, prevTree = hydrate($el)
 
   const render = () => {
     tmp = El(prevTree, fn(), $el)
     deleteRec(prevTree)
     prevTree = tmp
-  }
-
-  const deleteRec = (oldTree) => {
-    (oldTree.children??[]).map(deleteRec)
-    if (!oldTree.repaint) {
-      oldTree.$el.remove()
-      oldTree = null
-    }
   }
 
   const El = (prev, cur, root) => {

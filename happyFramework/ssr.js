@@ -76,34 +76,65 @@ const init = ($el, fn) => {
   return render
 }
 
+const RESERVED_PROPS = [
+  'nodeName',
+  'children',
+  'parentElement',
+  'innerText',
+]
+
+function optimizeQuotes(prop, value) {
+  return `${prop}="${value}"`
+}
+
 class Element {
   constructor(nodeName) {
     this.nodeName = nodeName
+    this.children = []
+    this.parentElement = null
   }
 
   get outerHTML() {
     const properties = Object.keys(this)
-      .filter(prop => prop != 'nodeName')
+      .filter(prop => {
+        if (prop.indexOf('on') === 2) return false
+        if (RESERVED_PROPS.includes(prop)) return false
+        return true
+      })
     const list = properties
-      .map(prop => `${prop}="${this[prop]}"`).join(' ')
-    return `<${this.nodeName} ${list}>${this.innerHTML}</${this.nodeName}>`
+      .map(prop => {
+        const val = this[prop]
+        if (prop === 'className') {
+          return optimizeQuotes('class', val)
+        }
+        return optimizeQuotes(prop, val)
+      }).join(' ')
+    return`<${this.nodeName}${list ? ' ' + list : ''}>${this.innerHTML}</${this.nodeName}>`
   }
 
   get innerHTML() {
-    return ''
+    if (this.innerText) return this.innerText
+
+    return this.children
+      .map(ch => ch.outerHTML)
+      .join('')
   }
 
-  addEventListener() {
-  }
-
-  removeEventListener() {
-  }
-
-  append() {
+  append(el) {
+    this.children.push(el)
+    el.parentElement = this
   }
 
   remove() {
+    this.parentElement.children =
+      this.parentElement.children.filter(
+        (el) => el != this
+      )
   }
+
+  addEventListener() { }
+
+  removeEventListener() { }
 }
 
 export default function ssr(html, App, serverData) {
